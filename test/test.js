@@ -14,10 +14,17 @@ fs.readdir(fixturesPath, function(err, files) {
             var basename = path.basename(file, '.xml');
 
             var data = fs.readFileSync(fixturesPath + '/' + file);
-            var result = parser.toJson(data, {reversible: true});
+            var result;
+            parser.toJson(data, {reversible: true}, function(err, data){
+                if(err) throw err;
+                result=data;
+            });
 
             var  data2 =  fs.readFileSync(fixturesPath + '/' + file);
-            result = parser.toJson(data2);
+            parser.toJson(data2, {},function(err, data){
+                if(err) throw err;
+                result=data;
+            });
 
             var jsonFile = basename + '.json';
             var expected = fs.readFileSync(fixturesPath + '/' + jsonFile) + '';
